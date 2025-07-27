@@ -1,1 +1,22 @@
-<p>chart-form works!</p>
+<button class="logout" (click)="logout()">Logout</button>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <input formControlName="name" placeholder="Chart Name" />
+  <select formControlName="type">
+    <option value="line">Line</option>
+    <option value="bar">Bar</option>
+    <option value="pie">Pie</option>
+  </select>
+  <button type="submit">Create Chart</button>
+</form>
+
+<div *ngFor="let chart of charts; let i = index" class="chart-wrapper"
+     mwlResizable [resizeEdges]="{ right: true, bottom: true }"
+     (resizeEnd)="onResize($event, i)"
+     [style.width.px]="chart.width || 500"
+     [style.height.px]="chart.height || 400">
+  
+  <app-chart-display [data]="chart" [width]="chart.width" [height]="chart.height"></app-chart-display>
+  <button (click)="editChart(i)">Edit</button>
+  <button (click)="deleteChart(i)">Delete</button>
+</div>
