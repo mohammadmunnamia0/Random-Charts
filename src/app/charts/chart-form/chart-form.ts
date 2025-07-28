@@ -1,14 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ResizeEvent } from 'angular-resizable-element';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../auth/auth.service';
+import { ChartDisplayComponent } from '../chart-display/chart-display';
 
 @Component({
   selector: 'app-chart-form',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ChartDisplayComponent
+  ],
   templateUrl: './chart-form.html',
-  styleUrl: './chart-form.scss'
+  styleUrls: ['./chart-form.scss']
 })
 export class ChartFormComponent implements OnInit {
   form: FormGroup;
@@ -33,9 +38,13 @@ export class ChartFormComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      const data = this.form.value;
+      const data = {
+        ...this.form.value,
+        width: 500, 
+        height: 400  
+      };
       if (this.editIndex !== null) {
-        this.charts[this.editIndex] = data;
+        this.charts[this.editIndex] = { ...this.charts[this.editIndex], ...data };
         this.editIndex = null;
       } else {
         this.charts.push(data);
@@ -43,10 +52,14 @@ export class ChartFormComponent implements OnInit {
       this.saveChartsToStorage();
       this.form.reset();
     }
+    console.log('Charts:', this.charts);
   }
 
   editChart(i: number) {
-    this.form.setValue(this.charts[i]);
+    this.form.setValue({
+      name: this.charts[i].name,
+      type: this.charts[i].type
+    });
     this.editIndex = i;
   }
 
@@ -59,9 +72,26 @@ export class ChartFormComponent implements OnInit {
     this.auth.logout();
   }
 
-  onResize(event: ResizeEvent, index: number) {
-    this.charts[index].width = event.rectangle.width;
-    this.charts[index].height = event.rectangle.height;
+  // resize handlers
+  increaseWidth(index: number) {
+    this.charts[index].width = (this.charts[index].width || 500) + 50;
+    this.saveChartsToStorage();
+  }
+
+  decreaseWidth(index: number) {
+    const currentWidth = this.charts[index].width || 500;
+    this.charts[index].width = Math.max(200, currentWidth - 50);
+    this.saveChartsToStorage();
+  }
+
+  increaseHeight(index: number) {
+    this.charts[index].height = (this.charts[index].height || 400) + 50;
+    this.saveChartsToStorage();
+  }
+
+  decreaseHeight(index: number) {
+    const currentHeight = this.charts[index].height || 400;
+    this.charts[index].height = Math.max(200, currentHeight - 50);
     this.saveChartsToStorage();
   }
 }

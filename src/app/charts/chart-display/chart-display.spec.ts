@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ChartDisplayComponent } from './chart-display';
 
-import { ChartDisplay } from './chart-display';
-
-describe('ChartDisplay', () => {
-  let component: ChartDisplay;
-  let fixture: ComponentFixture<ChartDisplay>;
+describe('ChartDisplayComponent', () => {
+  let component: ChartDisplayComponent;
+  let fixture: ComponentFixture<ChartDisplayComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChartDisplay]
+      imports: [ChartDisplayComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ChartDisplay);
+    fixture = TestBed.createComponent(ChartDisplayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

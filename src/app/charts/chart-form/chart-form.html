@@ -1,22 +1,53 @@
-<button class="logout" (click)="logout()">Logout</button>
+<header>
+  <h1>Chart Dashboard</h1>
+  <button class="logout" (click)="logout()">Logout</button>
+</header>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <input formControlName="name" placeholder="Chart Name" />
-  <select formControlName="type">
-    <option value="line">Line</option>
-    <option value="bar">Bar</option>
-    <option value="pie">Pie</option>
-  </select>
-  <button type="submit">Create Chart</button>
-</form>
+<div class="chart-creator">
+  <h2>{{ editIndex !== null ? 'Edit Chart' : 'Create New Chart' }}</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <input formControlName="name" placeholder="Chart Name" />
+    <select formControlName="type">
+      <option value="">Select Chart Type</option>
+      <option value="line">Line Chart</option>
+      <option value="bar">Bar Chart</option>
+      <option value="pie">Pie Chart</option>
+      <option value="column">Column Chart</option>
+      <option value="area">Area Chart</option>
+    </select>
+    <button type="submit" [disabled]="form.invalid">{{ editIndex !== null ? 'Update Chart' : 'Create Chart' }}</button>
+  </form>
+</div>
 
-<div *ngFor="let chart of charts; let i = index" class="chart-wrapper"
-     mwlResizable [resizeEdges]="{ right: true, bottom: true }"
-     (resizeEnd)="onResize($event, i)"
-     [style.width.px]="chart.width || 500"
-     [style.height.px]="chart.height || 400">
+<div class="charts-container">
+  <h2 *ngIf="charts.length > 0">Your Charts</h2>
+  <p *ngIf="charts.length === 0" class="no-charts">No charts created yet. Use the form above to create your first chart.</p>
   
-  <app-chart-display [data]="chart" [width]="chart.width" [height]="chart.height"></app-chart-display>
-  <button (click)="editChart(i)">Edit</button>
-  <button (click)="deleteChart(i)">Delete</button>
+  <div *ngFor="let chart of charts; let i = index" class="chart-wrapper">
+    <div class="chart-header">
+      <h3>{{ chart.name }}</h3>
+      <span class="chart-dimensions">{{chart.width || 500}}x{{chart.height || 400}}</span>
+    </div>
+    
+    <div class="chart-container">
+      <app-chart-display 
+        [data]="chart" 
+        [width]="chart.width || 500" 
+        [height]="chart.height || 400">
+      </app-chart-display>
+    </div>
+    
+    <div class="chart-controls">
+      <div class="resize-controls">
+        <button class="resize-button" (click)="decreaseWidth(i)" title="Decrease Width">W-</button>
+        <button class="resize-button" (click)="increaseWidth(i)" title="Increase Width">W+</button>
+        <button class="resize-button" (click)="decreaseHeight(i)" title="Decrease Height">H-</button>
+        <button class="resize-button" (click)="increaseHeight(i)" title="Increase Height">H+</button>
+      </div>
+      <div class="chart-actions">
+        <button class="edit-button" (click)="editChart(i)" title="Edit Chart">Edit</button>
+        <button class="delete-button" (click)="deleteChart(i)" title="Delete Chart">Delete</button>
+      </div>
+    </div>
+  </div>
 </div>
