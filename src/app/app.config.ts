@@ -10,6 +10,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),     
     provideAnimations()  ,
-     provideHighcharts(), 
+    provideHighcharts(), 
   ]
 };
